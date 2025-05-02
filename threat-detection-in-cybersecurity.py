@@ -97,3 +97,28 @@ LR_y_prob = LR_model.decision_function(X_test)
 
 LR_roc_auc = roc_auc_score(y_test, LR_y_prob)
 print(f'ROC-AUC Score: {LR_roc_auc:.2f}')
+LR_conf_matrix = confusion_matrix(y_test, LR_y_pred)
+df_conf_matrix = pd.DataFrame(LR_conf_matrix, index=['Actual Negative', 'Actual Positive'], columns=['Predicted Negative', 'Predicted Positive'])
+print("Logistic Regresion Confusion Matrix:")
+print(df_conf_matrix)
+
+#randomforest
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)  # You can adjust hyperparameters as needed
+
+# Train the model
+rf_model.fit(X_train, y_train)
+
+# Predict class labels
+rf_y_pred = rf_model.predict(X_test)
+
+# Predict probabilities for ROC-AUC
+rf_y_prob = rf_model.predict_proba(X_test)[:, 1]  # Assuming binary classification; for multiclass, adjust accordingly
+# Classification Report
+print("Classification Report:")
+print(classification_report(y_test, rf_y_pred))
+
+# Confusion Matrix
+rf_conf_matrix = confusion_matrix(y_test, rf_y_pred)
+df_conf_matrix = pd.DataFrame(rf_conf_matrix, index=['Actual Negative', 'Actual Positive'], columns=['Predicted Negative', 'Predicted Positive'])
+print("Random Forest Confusion Matrix:")
+print(df_conf_matrix)
