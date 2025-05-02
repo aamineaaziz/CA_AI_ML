@@ -31,3 +31,10 @@ f1 = pd.read_csv('/kaggle/input/network-intrusion-dataset/Friday-WorkingHours-Af
 # f8 = pd.read_csv('/kaggle/input/network-intrusion-dataset/Wednesday-workingHours.pcap_ISCX.csv')
 
 combine_df = pd.concat([f1], ignore_index=True)
+combine_df.head()
+
+combine_df.tail()
+combine_df.columns
+combine_df[' Label'].value_countencoder = LabelEncoder()
+combine_df[' Label']= encoder.fit_transform(combine_df[' Label'])s().sum
+combine_df.head()
