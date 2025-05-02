@@ -38,3 +38,18 @@ combine_df.columns
 combine_df[' Label'].value_countencoder = LabelEncoder()
 combine_df[' Label']= encoder.fit_transform(combine_df[' Label'])s().sum
 combine_df.head()
+
+df = combine_df.fillna(0)  # Replace NaN with 0
+df
+
+nan_mask = df.isna()
+print("NaNs in DataFrame:\n", df[nan_mask].sum())
+
+inf_mask = df.isin([np.inf, -np.inf])
+print("Infs in DataFrame:\n", df[inf_mask].sum())
+
+df.replace([np.inf, -np.inf], np.nan, inplace=True)  # Replace infinities with NaN
+df.fillna(0, inplace=True)  # Replace NaNs with 0
+
+df.replace([np.inf, -np.inf], np.nan, inplace=True)  # Replace infinities with NaN
+df.dropna(inplace=True)
