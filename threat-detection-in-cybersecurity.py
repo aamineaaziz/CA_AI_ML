@@ -1,3 +1,6 @@
+#Disclaimer, many code lines were from a combination fo Kaggle sources
+
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
