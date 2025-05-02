@@ -53,3 +53,23 @@ df.fillna(0, inplace=True)  # Replace NaNs with 0
 
 df.replace([np.inf, -np.inf], np.nan, inplace=True)  # Replace infinities with NaN
 df.dropna(inplace=True)
+
+df=df.astype(int)
+df
+
+X = df.drop(' Label',axis=1)
+y = df[' Label']
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+new_columns=[' Destination Port', ' Bwd Packet Length Min',
+       ' Bwd Packet Length Mean', ' Bwd Packets/s', ' Min Packet Length',
+       ' PSH Flag Count', ' URG Flag Count', ' Avg Fwd Segment Size',
+       ' Avg Bwd Segment Size', ' min_seg_size_forward']
+
+df_new=X[new_columns]
+df_new
+
+df_new['label']=df[' Label']
+df_new['label']
