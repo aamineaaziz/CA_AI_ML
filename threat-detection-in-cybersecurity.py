@@ -152,3 +152,115 @@ dnn_conf_matrix = confusion_matrix(y_test, dnn_y_pred)
 df_conf_matrix = pd.DataFrame(dnn_conf_matrix, index=['Actual Negative', 'Actual Positive'], columns=['Predicted Negative', 'Predicted Positive'])
 print("Deep learning Confusion Matrix:")
 print(df_conf_matrix)
+
+
+
+# Define predictions and true values (Replace these with your actual data)
+models = {
+    'Logistic Regresion': LR_model,
+    'Random Forest': rf_model
+}
+
+y_probs = {
+    'Logistic Regresion': LR_y_prob,
+    'Random Forest': rf_y_prob
+}
+
+# Plot ROC Curves
+def plot_roc_curves(models, y_test, y_probs):
+    plt.figure(figsize=(10, 6))
+    
+    for label, y_prob in y_probs.items():
+        fpr, tpr, _ = roc_curve(y_test, y_prob)
+        roc_auc = auc(fpr, tpr)
+        plt.plot(fpr, tpr, lw=2, label=f'ROC curve ({label}) (area = {roc_auc:.2f})')
+    
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC)')
+    plt.legend(loc="lower right")
+    plt.show()
+
+# Plot Confusion Matrices
+def plot_confusion_matrices(models, X_test, y_test):
+    for label, model in models.items():
+        y_pred = model.predict(X_test)  # Get predictions from the model
+        cm = confusion_matrix(y_test, y_pred)
+        
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                    xticklabels=['Negative', 'Positive'], 
+                    yticklabels=['Negative', 'Positive'])
+        plt.title(f'Confusion Matrix for {label}')
+        plt.xlabel('Predicted')
+        plt.ylabel('True')
+        plt.show()
+# Call the functions with your data
+plot_roc_curves(models, y_test, y_probs)
+plot_confusion_matrices(models, X_test, y_test)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(dnn_conf_matrix, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['Negative', 'Positive'],
+            yticklabels=['Negative', 'Positive'])
+plt.title('Confusion Matrix for Deep learning')
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.show()
+
+def compute_metrics(y_true, y_pred):
+    report = classification_report(y_true, y_pred, output_dict=True)
+    metrics = {
+        'accuracy': report['accuracy'],
+        'precision': report['weighted avg']['precision'],
+        'recall': report['weighted avg']['recall'],
+        'f1_score': report['weighted avg']['f1-score']
+    }
+    return metrics
+
+def prepare_metrics_df(metrics_dict):
+    df = pd.DataFrame(metrics_dict).T
+    df.reset_index(inplace=True)
+    df.rename(columns={'index': 'Model'}, inplace=True)
+    return df
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+from sklearn.metrics import classification_report
+
+y_pred_model1 = LR_y_pred
+y_pred_model2 = rf_y_pred
+y_pred_model3 = dnn_y_pred
+
+# Compute metrics
+metrics_model1 = compute_metrics(y_test, y_pred_model1)
+metrics_model2 = compute_metrics(y_test, y_pred_model2)
+metrics_model3 = compute_metrics(y_test, y_pred_model3)
+
+# Prepare metrics for plotting
+metrics_dict = {
+    'Logistic Regresion': metrics_model1,
+    'Random Forest': metrics_model2,
+    'Deep learning': metrics_model3
+}
+metrics_df = prepare_metrics_df(metrics_dict)
+
+# Plot the metrics
+plt.figure(figsize=(12, 8))
+
+# Plot Accuracy, Precision, Recall, and F1-Score
+metrics_df.set_index('Model').plot(kind='bar', figsize=(12, 8), rot=45)
+plt.title('Comparison of Models')
+plt.ylabel('Score')
+plt.xlabel('Model')
+plt.ylim(0, 1)  # Assuming all metrics are normalized between 0 and 1
+plt.legend(loc='best')
+plt.grid(axis='y')
+plt.show()
+
+
+
