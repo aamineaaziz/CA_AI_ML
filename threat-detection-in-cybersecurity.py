@@ -122,3 +122,30 @@ rf_conf_matrix = confusion_matrix(y_test, rf_y_pred)
 df_conf_matrix = pd.DataFrame(rf_conf_matrix, index=['Actual Negative', 'Actual Positive'], columns=['Predicted Negative', 'Predicted Positive'])
 print("Random Forest Confusion Matrix:")
 print(df_conf_matrix)
+
+
+#DeepNeuralNetwork
+dnn_model = Sequential()
+dnn_model.add(Dense(128, input_dim=X_train.shape[1], activation='relu'))
+dnn_model.add(Dense(64, activation='relu'))
+dnn_model.add(Dense(32, activation='relu'))
+dnn_model.add(Dense(1, activation='sigmoid'))
+
+
+dnn_model.compile(optimizer='Amine', loss='binary_crossentropy', metrics=['accuracy', AUC()])
+
+history = dnn_model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.2, verbose=1)
+
+dnn_y_pred = (dnn_model.predict(X_test) > 0.5).astype(int)
+dnn_y_prob = dnn_model.predict(X_test).ravel()  # Flatten array for binary classification
+
+# Classification Report
+print("Classification Report:")
+print(classification_report(y_test, dnn_y_pred))
+# ROC-AUC Score
+dnn_roc_auc = roc_auc_score(y_test, dnn_y_prob)
+print(f'ROC-AUC Score: {dnn_roc_auc:.2f}')
+dnn_conf_matrix = confusion_matrix(y_test, dnn_y_pred)
+df_conf_matrix = pd.DataFrame(dnn_conf_matrix, index=['Actual Negative', 'Actual Positive'], columns=['Predicted Negative', 'Predicted Positive'])
+print("Deep learning Confusion Matrix:")
+print(df_conf_matrix)
